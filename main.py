@@ -1,78 +1,80 @@
-from tkinter.constants import BOTTOM, GROOVE, RAISED, TOP
+from tkinter.constants import GROOVE
 import zhongli as zt
 import diona as dt
 import tkinter as tk
 from tkinter import ttk
 
-TALENT_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9 , 10, 11, 12, 13]
+class MainApplication(tk.Frame):
+    def __init__(self, parent, *args, **kwargs):
+        TALENT_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9 , 10, 11, 12, 13]
+        
+        tk.Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        
+        # Zhongli
+        self.zhongli_label = tk.Label(parent, text="Zhongli", justify="center")
 
+        self.zhongli_hp = tk.Entry(parent, width=10, justify="center")
+        self.zhongli_hp.insert(0, "HP")
 
-window = tk.Tk()
-window.resizable(False, False)
-window.title("Shield Calculator")
-window.iconbitmap("shield_pencil.ico")
+        self.zhongli_talent = ttk.Combobox(parent, justify="center", state="readonly", values=TALENT_LEVELS)
+        self.zhongli_talent.set("Talent Level")
 
+        self.button_calc_zhon = ttk.Button(parent, text="Calculate", command=self.set_shield_zhongli)
 
-frame_z = tk.Frame(window)
-frame_z.pack(fill=tk.BOTH, side=TOP)
+        self.zhongli_shield_label = tk.Label(parent, text="0", justify="center", relief=GROOVE, bd=3, width=7)
+        
+        # Diona
+        self.diona_label = tk.Label(parent, text="Diona", justify="center")
 
-def set_shield_zhongli():
-    hp = int(zhongli_hp.get())
-    talent_lvl = int(zhongli_talent.get())
-    zhongli_shield_label["text"] = zt.zhongli_shield(hp, talent_lvl)
+        self.diona_hp = tk.Entry(parent, width=10, justify="center")
+        self.diona_hp.insert(0, "HP")
 
-zhongli_label = tk.Label(frame_z, text="Zhongli", justify="center")
-zhongli_label.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
+        self.diona_talent = ttk.Combobox(parent, justify="center", state="readonly", values=TALENT_LEVELS)
+        self.diona_talent.set("Talent Level")
 
-zhongli_hp = tk.Entry(frame_z, width=10, justify="center")
-zhongli_hp.insert(0, "HP")
-zhongli_hp.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
+        self.hold_var = tk.IntVar()
+        self.diona_hold = ttk.Checkbutton(parent, text="Hold", variable=self.hold_var)
 
-zhongli_talent = ttk.Combobox(frame_z, justify="center", state="readonly", values=TALENT_LEVELS)
-zhongli_talent.set("Talent Level")
-zhongli_talent.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
+        self.const_var = tk.IntVar()
+        self.diona_const = ttk.Checkbutton(parent, text="C2", variable=self.const_var)
 
-button_calc_zhon = ttk.Button(frame_z, text="Calculate", command=set_shield_zhongli)
-button_calc_zhon.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
+        self.button_calc_diona = ttk.Button(parent, text="Calculate", command=self.set_shield_diona)
 
-zhongli_shield_label = tk.Label(frame_z, text="0", justify="center", relief=GROOVE, bd=3, width=7)
-zhongli_shield_label.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
+        self.diona_shield_label = tk.Label(parent, text="0", justify="center", relief=GROOVE, bd=3, width=7)
+        
+        # Layout
+        self.zhongli_label.grid(row=0, column=0, padx=5, pady=5)
+        self.zhongli_hp.grid(row=0, column=1, padx=5, pady=5)
+        self.zhongli_talent.grid(row=0, column=2, padx=5, pady=5)
+        self.button_calc_zhon.grid(row=0, column=3, padx=5, pady=5)
+        self.zhongli_shield_label.grid(row=0, column=4, padx=5, pady=5)
+        self.diona_label.grid(row=1, column=0)
+        self.diona_hp.grid(row=1, column=1)
+        self.diona_talent.grid(row=1, column=2)
+        self.diona_hold.grid(row=1, column=3)
+        self.diona_const.grid(row=1, column=4)
+        self.button_calc_diona.grid(row=1, column=5, padx=5, pady=5)
+        self.diona_shield_label.grid(row=1, column=6, padx=5, pady=5)
+        
+        
+    def set_shield_zhongli(self):
+        self.hp = int(self.zhongli_hp.get())
+        self.talent_lvl = int(self.zhongli_talent.get())
+        self.zhongli_shield_label["text"] = zt.zhongli_shield(self.hp, self.talent_lvl)
+    
+    def set_shield_diona(self):
+        self.hp = int(self.diona_hp.get())
+        self.talent_lvl = int(self.diona_talent.get())
+        self.hold = bool(self.hold_var.get())
+        self.constellation = bool(self.const_var.get())
+        self.diona_shield_label["text"] = dt.diona_shield(self.hp, self.talent_lvl, self.hold, self.constellation)
+    
 
-
-frame_d = tk.Frame(window)
-frame_d.pack(fill=tk.BOTH, side=BOTTOM)
-
-def set_shield_diona():
-    hp = int(diona_hp.get())
-    talent_lvl = int(diona_talent.get())
-    hold = bool(hold_var.get())
-    constellation = bool(const_var.get())
-    diona_shield_label["text"] = dt.diona_shield(hp, talent_lvl, hold, constellation)
-
-diona_label = tk.Label(frame_d, text="Diona", justify="center")
-diona_label.pack(fill=tk.BOTH, side=tk.LEFT, padx=(5, 15), pady=5)
-
-diona_hp = tk.Entry(frame_d, width=10, justify="center")
-diona_hp.insert(0, "HP")
-diona_hp.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
-
-diona_talent = ttk.Combobox(frame_d, justify="center", state="readonly", values=TALENT_LEVELS)
-diona_talent.set("Talent Level")
-diona_talent.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
-
-hold_var = tk.IntVar()
-diona_hold = ttk.Checkbutton(frame_d, text="Hold", variable=hold_var)
-diona_hold.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
-
-const_var = tk.IntVar()
-diona_const = ttk.Checkbutton(frame_d, text="C2", variable=const_var)
-diona_const.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
-
-button_calc_diona = ttk.Button(frame_d, text="Calculate", command=set_shield_diona)
-button_calc_diona.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
-
-diona_shield_label = tk.Label(frame_d, text="0", justify="center", relief=GROOVE, bd=3, width=7)
-diona_shield_label.pack(fill=tk.BOTH, side=tk.LEFT, padx=5, pady=5)
-
-
-window.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.resizable(False, False)
+    root.title("Shield Calculator")
+    root.iconbitmap("shield_pencil.ico")
+    MainApplication(root)
+    root.mainloop()
