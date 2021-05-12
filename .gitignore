@@ -1,4 +1,8 @@
 .vscode
 __pycache__
 venv
-test.py
+temp.py
+Shield-Calculator.spec
+dist
+build
+shield_calculator/__pycache__

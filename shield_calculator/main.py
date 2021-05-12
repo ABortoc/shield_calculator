@@ -1,6 +1,6 @@
 from tkinter.constants import GROOVE
-import zhongli as zt
-import diona as dt
+import shield_calculator.zhongli as zt
+import shield_calculator.diona as dt
 import tkinter as tk
 from tkinter import ttk
 
@@ -69,12 +69,12 @@ class MainApplication(tk.Frame):
         self.hold = bool(self.hold_var.get())
         self.constellation = bool(self.const_var.get())
         self.diona_shield_label["text"] = dt.diona_shield(self.hp, self.talent_lvl, self.hold, self.constellation)
-    
+        
 
-if __name__ == "__main__":
+def main():
     root = tk.Tk()
     root.resizable(False, False)
     root.title("Shield Calculator")
-    root.iconbitmap("shield_pencil.ico")
+    root.iconbitmap("D:\\gi_shield_calc\\shield_calculator\\shield_pencil.ico")
     MainApplication(root)
     root.mainloop()
